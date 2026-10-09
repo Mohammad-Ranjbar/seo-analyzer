@@ -1,0 +1,849 @@
+Project seo_analyzer {
+  database_type: 'PostgreSQL'
+  Note: 'Conceptual MVP schema. Documentation only; not an executable migration.'
+}
+
+Table users {
+  id uuid [pk]
+  display_name varchar(150)
+  status varchar(30) [not null]
+  locale varchar(10) [not null, default: 'fa-IR']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  deleted_at timestamptz
+}
+
+Table user_contacts {
+  id uuid [pk]
+  user_id uuid [not null]
+  contact_type varchar(20) [not null, note: 'mobile or email']
+  normalized_value varchar(320) [not null]
+  is_primary boolean [not null, default: false]
+  verified_at timestamptz
+  created_at timestamptz [not null]
+
+  indexes {
+    (contact_type, normalized_value) [unique, name: 'uq_user_contacts_type_value']
+    (user_id, contact_type) [name: 'idx_user_contacts_user_type']
+  }
+}
+
+Table user_credentials {
+  user_id uuid [pk]
+  password_hash varchar(255) [not null]
+  password_changed_at timestamptz [not null]
+  failed_attempts integer [not null, default: 0]
+  locked_until timestamptz
+  updated_at timestamptz [not null]
+}
+
+Table otp_challenges {
+  id uuid [pk]
+  user_contact_id uuid [not null]
+  purpose varchar(40) [not null]
+  code_hash varchar(255) [not null]
+  attempts integer [not null, default: 0]
+  max_attempts integer [not null]
+  expires_at timestamptz [not null]
+  consumed_at timestamptz
+  created_at timestamptz [not null]
+}
+
+Table auth_sessions {
+  id uuid [pk]
+  user_id uuid [not null]
+  refresh_token_hash varchar(255) [not null]
+  device_label varchar(150)
+  ip_hash varchar(255)
+  user_agent_hash varchar(255)
+  expires_at timestamptz [not null]
+  revoked_at timestamptz
+  created_at timestamptz [not null]
+}
+
+Table organizations {
+  id uuid [pk]
+  name varchar(160) [not null]
+  slug varchar(180) [not null, unique]
+  status varchar(30) [not null]
+  created_by_user_id uuid [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  deleted_at timestamptz
+}
+
+Table organization_memberships {
+  id uuid [pk]
+  organization_id uuid [not null]
+  user_id uuid [not null]
+  organization_role varchar(20) [not null, note: 'owner, admin, member']
+  status varchar(20) [not null]
+  joined_at timestamptz [not null]
+  removed_at timestamptz
+
+  indexes {
+    (organization_id, user_id) [unique, name: 'uq_org_memberships_org_user']
+  }
+}
+
+Table organization_invitations {
+  id uuid [pk]
+  organization_id uuid [not null]
+  invited_by_user_id uuid [not null]
+  invite_type varchar(20) [not null, note: 'mobile, email, link']
+  target_normalized varchar(320)
+  token_hash varchar(255) [not null]
+  intended_role varchar(20) [not null]
+  max_uses integer [not null, default: 1]
+  used_count integer [not null, default: 0]
+  status varchar(20) [not null]
+  expires_at timestamptz [not null]
+  accepted_at timestamptz
+  revoked_at timestamptz
+  created_at timestamptz [not null]
+}
+
+Table workspaces {
+  id uuid [pk]
+  organization_id uuid [not null]
+  name varchar(160) [not null]
+  slug varchar(180) [not null]
+  timezone varchar(80) [not null, default: 'Asia/Tehran']
+  status varchar(20) [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  deleted_at timestamptz
+
+  indexes {
+    (organization_id, slug) [unique, name: 'uq_workspaces_org_slug']
+  }
+}
+
+Table workspace_members {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  organization_membership_id uuid [not null]
+  status varchar(20) [not null]
+  joined_at timestamptz [not null]
+  removed_at timestamptz
+
+  indexes {
+    (workspace_id, organization_membership_id) [unique, name: 'uq_workspace_members_membership']
+  }
+}
+
+Table permissions {
+  id uuid [pk]
+  resource varchar(80) [not null]
+  action varchar(80) [not null]
+  key varchar(170) [not null, unique]
+  description varchar(300)
+  created_at timestamptz [not null]
+}
+
+Table workspace_roles {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  name varchar(100) [not null]
+  description varchar(300)
+  is_system boolean [not null, default: false]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (workspace_id, name) [unique, name: 'uq_workspace_roles_name']
+  }
+}
+
+Table workspace_role_permissions {
+  workspace_role_id uuid [not null]
+  permission_id uuid [not null]
+  granted_at timestamptz [not null]
+
+  indexes {
+    (workspace_role_id, permission_id) [pk, name: 'pk_workspace_role_permissions']
+  }
+}
+
+Table workspace_member_roles {
+  workspace_member_id uuid [not null]
+  workspace_role_id uuid [not null]
+  assigned_by_user_id uuid [not null]
+  assigned_at timestamptz [not null]
+
+  indexes {
+    (workspace_member_id, workspace_role_id) [pk, name: 'pk_workspace_member_roles']
+  }
+}
+
+Table seo_projects {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  name varchar(180) [not null]
+  status varchar(30) [not null]
+  created_by_user_id uuid [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  deleted_at timestamptz
+}
+
+Table project_scopes {
+  seo_project_id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  business_name varchar(180) [not null]
+  industry varchar(160) [not null]
+  target_market varchar(160) [not null]
+  target_geography varchar(160) [not null]
+  target_audience text [not null]
+  competitive_advantage text
+  seo_objectives text [not null]
+  out_of_scope text
+  approved_at timestamptz
+  updated_at timestamptz [not null]
+}
+
+Table project_scope_categories {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  name varchar(180) [not null]
+  priority smallint [not null]
+
+  indexes {
+    (seo_project_id, name) [unique, name: 'uq_project_scope_categories_name']
+  }
+}
+
+Table competitors {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  name varchar(180) [not null]
+  status varchar(30) [not null]
+  approved_by_user_id uuid [not null]
+  approved_at timestamptz [not null]
+  archived_at timestamptz
+}
+
+Table competitor_suggestions {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  suggested_name varchar(180) [not null]
+  suggested_domain varchar(255) [not null]
+  source_type varchar(30) [not null]
+  evidence text
+  status varchar(30) [not null]
+  reviewed_by_user_id uuid
+  reviewed_at timestamptz
+  created_at timestamptz [not null]
+}
+
+Table web_properties {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  competitor_id uuid
+  property_kind varchar(30) [not null, note: 'owner_primary, owner_subdomain, competitor']
+  scheme varchar(10) [not null]
+  host varchar(255) [not null]
+  base_path varchar(500) [not null, default: '/']
+  status varchar(30) [not null]
+  created_at timestamptz [not null]
+  archived_at timestamptz
+
+  indexes {
+    (seo_project_id, scheme, host, base_path) [unique, name: 'uq_web_properties_project_origin_path']
+  }
+}
+
+Table crawl_configurations {
+  web_property_id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  max_pages integer [not null]
+  max_depth integer [not null]
+  request_delay_ms integer [not null]
+  request_timeout_ms integer [not null]
+  allow_headless_fallback boolean [not null]
+  max_headless_pages integer [not null]
+  respect_robots_txt boolean [not null, default: true]
+  user_agent varchar(255) [not null]
+  updated_at timestamptz [not null]
+}
+
+Table crawl_schedules {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  web_property_id uuid [not null]
+  frequency varchar(20) [not null, note: 'weekly or monthly']
+  timezone varchar(80) [not null]
+  day_of_week smallint
+  day_of_month smallint
+  local_time time [not null]
+  is_active boolean [not null]
+  next_run_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table crawl_runs {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  web_property_id uuid [not null]
+  crawl_schedule_id uuid
+  trigger_type varchar(20) [not null]
+  status varchar(30) [not null]
+  is_baseline boolean [not null, default: false]
+  started_at timestamptz
+  completed_at timestamptz
+  pages_discovered integer [not null, default: 0]
+  pages_processed integer [not null, default: 0]
+  headless_pages integer [not null, default: 0]
+  error_code varchar(80)
+  created_at timestamptz [not null]
+}
+
+Table crawl_pages {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  web_property_id uuid [not null]
+  canonical_url text [not null]
+  normalized_url_hash varchar(64) [not null]
+  detected_page_type varchar(30)
+  first_seen_at timestamptz [not null]
+  last_seen_at timestamptz [not null]
+
+  indexes {
+    (web_property_id, normalized_url_hash) [unique, name: 'uq_crawl_pages_property_url_hash']
+  }
+}
+
+Table crawl_page_snapshots {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  crawl_run_id uuid [not null]
+  crawl_page_id uuid [not null]
+  http_status smallint
+  final_url text
+  page_type varchar(30)
+  render_mode varchar(20) [not null]
+  title text
+  meta_description text
+  h1_text text
+  canonical_url text
+  robots_directives varchar(255)
+  structured_data jsonb
+  content_fingerprint varchar(64)
+  content_length integer
+  image_count integer [not null, default: 0]
+  images_without_alt integer [not null, default: 0]
+  internal_link_count integer [not null, default: 0]
+  external_link_count integer [not null, default: 0]
+  extracted_at timestamptz [not null]
+
+  indexes {
+    (crawl_run_id, crawl_page_id) [unique, name: 'uq_crawl_page_snapshots_run_page']
+  }
+}
+
+Table crawl_links {
+  id bigint [pk, increment]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  crawl_run_id uuid [not null]
+  source_page_id uuid [not null]
+  target_page_id uuid
+  target_url text [not null]
+  rel_flags varchar(255)
+  anchor_fingerprint varchar(64)
+  is_internal boolean [not null]
+}
+
+Table page_type_overrides {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  web_property_id uuid [not null]
+  url_pattern varchar(500) [not null]
+  forced_page_type varchar(30) [not null]
+  created_by_user_id uuid [not null]
+  created_at timestamptz [not null]
+  disabled_at timestamptz
+}
+
+Table audit_rules {
+  id uuid [pk]
+  key varchar(160) [not null, unique]
+  name varchar(180) [not null]
+  scope varchar(30) [not null]
+  category varchar(60) [not null]
+  created_at timestamptz [not null]
+}
+
+Table audit_rule_versions {
+  id uuid [pk]
+  audit_rule_id uuid [not null]
+  version integer [not null]
+  severity varchar(20) [not null]
+  parameters jsonb [not null]
+  implementation_version varchar(80) [not null]
+  published_at timestamptz [not null]
+  retired_at timestamptz
+
+  indexes {
+    (audit_rule_id, version) [unique, name: 'uq_audit_rule_versions_rule_version']
+  }
+}
+
+Table audit_findings {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  crawl_run_id uuid [not null]
+  crawl_page_snapshot_id uuid
+  audit_rule_version_id uuid [not null]
+  severity varchar(20) [not null]
+  result varchar(20) [not null]
+  evidence jsonb [not null]
+  fingerprint varchar(64) [not null]
+  created_at timestamptz [not null]
+
+  indexes {
+    (crawl_run_id, fingerprint) [unique, name: 'uq_audit_findings_run_fingerprint']
+  }
+}
+
+Table score_model_versions {
+  id uuid [pk]
+  key varchar(120) [not null]
+  version integer [not null]
+  weights jsonb [not null]
+  published_at timestamptz [not null]
+  retired_at timestamptz
+
+  indexes {
+    (key, version) [unique, name: 'uq_score_model_versions_key_version']
+  }
+}
+
+Table score_snapshots {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  crawl_run_id uuid [not null]
+  score_model_version_id uuid [not null]
+  overall_score numeric(5,2) [not null]
+  metadata_score numeric(5,2) [not null]
+  indexability_score numeric(5,2) [not null]
+  structured_data_score numeric(5,2) [not null]
+  internal_links_score numeric(5,2) [not null]
+  crawl_health_score numeric(5,2) [not null]
+  created_at timestamptz [not null]
+
+  indexes {
+    (crawl_run_id, score_model_version_id) [unique, name: 'uq_score_snapshots_run_model']
+  }
+}
+
+Table competitor_comparisons {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  owner_crawl_run_id uuid [not null]
+  competitor_crawl_run_id uuid [not null]
+  score_model_version_id uuid [not null]
+  metric_deltas jsonb [not null]
+  confidence numeric(5,2) [not null]
+  created_at timestamptz [not null]
+}
+
+Table action_items {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  source_finding_id uuid
+  title varchar(240) [not null]
+  description text [not null]
+  priority varchar(20) [not null]
+  user_status varchar(30) [not null]
+  fingerprint varchar(64) [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  closed_at timestamptz
+}
+
+Table action_item_status_history {
+  id bigint [pk, increment]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  action_item_id uuid [not null]
+  from_status varchar(30)
+  to_status varchar(30) [not null]
+  changed_by_user_id uuid [not null]
+  changed_at timestamptz [not null]
+}
+
+Table action_item_verifications {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  action_item_id uuid [not null]
+  crawl_run_id uuid [not null]
+  verification_status varchar(30) [not null]
+  evidence jsonb [not null]
+  verified_at timestamptz [not null]
+
+  indexes {
+    (action_item_id, crawl_run_id) [unique, name: 'uq_action_verifications_item_run']
+  }
+}
+
+Table brands {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  name varchar(180) [not null]
+  normalized_name varchar(180) [not null]
+
+  indexes {
+    (seo_project_id, normalized_name) [unique, name: 'uq_brands_project_name']
+  }
+}
+
+Table categories {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  parent_id uuid
+  name varchar(180) [not null]
+  slug varchar(200) [not null]
+  created_at timestamptz [not null]
+
+  indexes {
+    (seo_project_id, parent_id, slug) [unique, name: 'uq_categories_project_parent_slug']
+  }
+}
+
+Table products {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  brand_id uuid
+  title varchar(500) [not null]
+  normalized_title varchar(500) [not null]
+  status varchar(30) [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table product_categories {
+  product_id uuid [not null]
+  category_id uuid [not null]
+  is_primary boolean [not null, default: false]
+
+  indexes {
+    (product_id, category_id) [pk, name: 'pk_product_categories']
+  }
+}
+
+Table product_sources {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  product_id uuid [not null]
+  source_type varchar(20) [not null, note: 'api or crawl']
+  web_property_id uuid
+  crawl_page_id uuid
+  external_id varchar(255)
+  source_url text
+  last_synced_at timestamptz
+}
+
+Table seo_generation_runs {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid [not null]
+  product_id uuid [not null]
+  generation_mode varchar(30) [not null]
+  provider_key varchar(80)
+  context_version varchar(80) [not null]
+  status varchar(30) [not null]
+  created_by_user_id uuid
+  created_at timestamptz [not null]
+  completed_at timestamptz
+}
+
+Table seo_generation_versions {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_generation_run_id uuid [not null]
+  version integer [not null]
+  seo_title varchar(600) [not null]
+  meta_description text [not null]
+  slug varchar(500) [not null]
+  decision varchar(30) [not null]
+  decided_by_user_id uuid
+  decided_at timestamptz
+  created_at timestamptz [not null]
+
+  indexes {
+    (seo_generation_run_id, version) [unique, name: 'uq_seo_generation_versions_run_version']
+  }
+}
+
+Table seo_generation_keywords {
+  seo_generation_version_id uuid [not null]
+  keyword varchar(300) [not null]
+  position smallint [not null]
+
+  indexes {
+    (seo_generation_version_id, position) [pk, name: 'pk_seo_generation_keywords']
+  }
+}
+
+Table api_keys {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  name varchar(150) [not null]
+  public_prefix varchar(30) [not null, unique]
+  secret_hash varchar(255) [not null]
+  last_used_at timestamptz
+  expires_at timestamptz
+  revoked_at timestamptz
+  created_by_user_id uuid [not null]
+  created_at timestamptz [not null]
+}
+
+Table api_key_permissions {
+  api_key_id uuid [not null]
+  permission_id uuid [not null]
+
+  indexes {
+    (api_key_id, permission_id) [pk, name: 'pk_api_key_permissions']
+  }
+}
+
+Table api_key_project_scopes {
+  api_key_id uuid [not null]
+  seo_project_id uuid [not null]
+
+  indexes {
+    (api_key_id, seo_project_id) [pk, name: 'pk_api_key_project_scopes']
+  }
+}
+
+Table webhook_endpoints {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  name varchar(150) [not null]
+  url text [not null]
+  encrypted_secret text [not null]
+  subscribed_events jsonb [not null]
+  is_active boolean [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table webhook_deliveries {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  webhook_endpoint_id uuid [not null]
+  event_id uuid [not null]
+  event_type varchar(100) [not null]
+  attempt integer [not null]
+  status varchar(30) [not null]
+  response_status smallint
+  response_time_ms integer
+  next_retry_at timestamptz
+  delivered_at timestamptz
+  created_at timestamptz [not null]
+
+  indexes {
+    (webhook_endpoint_id, event_id, attempt) [unique, name: 'uq_webhook_deliveries_attempt']
+  }
+}
+
+Table usage_events {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  seo_project_id uuid
+  event_type varchar(80) [not null]
+  quantity numeric(18,4) [not null]
+  idempotency_key varchar(180) [not null, unique]
+  occurred_at timestamptz [not null]
+}
+
+Table usage_daily_summaries {
+  organization_id uuid [not null]
+  workspace_id uuid [not null]
+  usage_date date [not null]
+  event_type varchar(80) [not null]
+  total_quantity numeric(18,4) [not null]
+  rebuilt_at timestamptz [not null]
+
+  indexes {
+    (workspace_id, usage_date, event_type) [pk, name: 'pk_usage_daily_summaries']
+  }
+}
+
+Table audit_logs {
+  id bigint [pk, increment]
+  organization_id uuid
+  workspace_id uuid
+  actor_type varchar(30) [not null]
+  actor_id uuid
+  action varchar(120) [not null]
+  target_type varchar(100)
+  target_id uuid
+  metadata jsonb [not null]
+  occurred_at timestamptz [not null]
+}
+
+Table waitlist_entries {
+  id uuid [pk]
+  user_id uuid
+  mobile_normalized varchar(30)
+  email_normalized varchar(320)
+  use_case text [not null]
+  status varchar(30) [not null]
+  reviewed_by_user_id uuid
+  reviewed_at timestamptz
+  created_at timestamptz [not null]
+}
+
+Table deletion_requests {
+  id uuid [pk]
+  organization_id uuid [not null]
+  workspace_id uuid
+  requested_by_user_id uuid [not null]
+  target_type varchar(80) [not null]
+  target_id uuid [not null]
+  status varchar(30) [not null]
+  recoverable_until timestamptz [not null]
+  purge_started_at timestamptz
+  purged_at timestamptz
+  created_at timestamptz [not null]
+}
+
+Ref: user_contacts.user_id > users.id [delete: cascade]
+Ref: user_credentials.user_id - users.id [delete: cascade]
+Ref: otp_challenges.user_contact_id > user_contacts.id [delete: cascade]
+Ref: auth_sessions.user_id > users.id [delete: cascade]
+Ref: organizations.created_by_user_id > users.id
+Ref: organization_memberships.organization_id > organizations.id
+Ref: organization_memberships.user_id > users.id
+Ref: organization_invitations.organization_id > organizations.id
+Ref: organization_invitations.invited_by_user_id > users.id
+Ref: workspaces.organization_id > organizations.id
+Ref: workspace_members.organization_id > organizations.id
+Ref: workspace_members.workspace_id > workspaces.id
+Ref: workspace_members.organization_membership_id > organization_memberships.id
+Ref: workspace_roles.organization_id > organizations.id
+Ref: workspace_roles.workspace_id > workspaces.id
+Ref: workspace_role_permissions.workspace_role_id > workspace_roles.id [delete: cascade]
+Ref: workspace_role_permissions.permission_id > permissions.id
+Ref: workspace_member_roles.workspace_member_id > workspace_members.id [delete: cascade]
+Ref: workspace_member_roles.workspace_role_id > workspace_roles.id [delete: cascade]
+Ref: workspace_member_roles.assigned_by_user_id > users.id
+Ref: seo_projects.organization_id > organizations.id
+Ref: seo_projects.workspace_id > workspaces.id
+Ref: seo_projects.created_by_user_id > users.id
+Ref: project_scopes.seo_project_id - seo_projects.id [delete: cascade]
+Ref: project_scope_categories.seo_project_id > seo_projects.id [delete: cascade]
+Ref: competitors.seo_project_id > seo_projects.id [delete: cascade]
+Ref: competitors.approved_by_user_id > users.id
+Ref: competitor_suggestions.seo_project_id > seo_projects.id [delete: cascade]
+Ref: competitor_suggestions.reviewed_by_user_id > users.id
+Ref: web_properties.seo_project_id > seo_projects.id [delete: cascade]
+Ref: web_properties.competitor_id > competitors.id
+Ref: crawl_configurations.web_property_id - web_properties.id [delete: cascade]
+Ref: crawl_schedules.seo_project_id > seo_projects.id [delete: cascade]
+Ref: crawl_schedules.web_property_id > web_properties.id [delete: cascade]
+Ref: crawl_runs.seo_project_id > seo_projects.id [delete: cascade]
+Ref: crawl_runs.web_property_id > web_properties.id
+Ref: crawl_runs.crawl_schedule_id > crawl_schedules.id
+Ref: crawl_pages.seo_project_id > seo_projects.id [delete: cascade]
+Ref: crawl_pages.web_property_id > web_properties.id [delete: cascade]
+Ref: crawl_page_snapshots.crawl_run_id > crawl_runs.id [delete: cascade]
+Ref: crawl_page_snapshots.crawl_page_id > crawl_pages.id [delete: cascade]
+Ref: crawl_links.crawl_run_id > crawl_runs.id [delete: cascade]
+Ref: crawl_links.source_page_id > crawl_pages.id [delete: cascade]
+Ref: crawl_links.target_page_id > crawl_pages.id
+Ref: page_type_overrides.seo_project_id > seo_projects.id [delete: cascade]
+Ref: page_type_overrides.web_property_id > web_properties.id [delete: cascade]
+Ref: audit_rule_versions.audit_rule_id > audit_rules.id
+Ref: audit_findings.seo_project_id > seo_projects.id [delete: cascade]
+Ref: audit_findings.crawl_run_id > crawl_runs.id [delete: cascade]
+Ref: audit_findings.crawl_page_snapshot_id > crawl_page_snapshots.id [delete: cascade]
+Ref: audit_findings.audit_rule_version_id > audit_rule_versions.id
+Ref: score_snapshots.seo_project_id > seo_projects.id [delete: cascade]
+Ref: score_snapshots.crawl_run_id > crawl_runs.id [delete: cascade]
+Ref: score_snapshots.score_model_version_id > score_model_versions.id
+Ref: competitor_comparisons.seo_project_id > seo_projects.id [delete: cascade]
+Ref: competitor_comparisons.owner_crawl_run_id > crawl_runs.id
+Ref: competitor_comparisons.competitor_crawl_run_id > crawl_runs.id
+Ref: competitor_comparisons.score_model_version_id > score_model_versions.id
+Ref: action_items.seo_project_id > seo_projects.id [delete: cascade]
+Ref: action_items.source_finding_id > audit_findings.id
+Ref: action_item_status_history.action_item_id > action_items.id [delete: cascade]
+Ref: action_item_status_history.changed_by_user_id > users.id
+Ref: action_item_verifications.action_item_id > action_items.id [delete: cascade]
+Ref: action_item_verifications.crawl_run_id > crawl_runs.id
+Ref: categories.seo_project_id > seo_projects.id [delete: cascade]
+Ref: categories.parent_id > categories.id
+Ref: brands.seo_project_id > seo_projects.id [delete: cascade]
+Ref: products.seo_project_id > seo_projects.id [delete: cascade]
+Ref: products.brand_id > brands.id
+Ref: product_categories.product_id > products.id [delete: cascade]
+Ref: product_categories.category_id > categories.id [delete: cascade]
+Ref: product_sources.product_id > products.id [delete: cascade]
+Ref: product_sources.web_property_id > web_properties.id
+Ref: product_sources.crawl_page_id > crawl_pages.id
+Ref: seo_generation_runs.seo_project_id > seo_projects.id [delete: cascade]
+Ref: seo_generation_runs.product_id > products.id [delete: cascade]
+Ref: seo_generation_versions.seo_generation_run_id > seo_generation_runs.id [delete: cascade]
+Ref: seo_generation_keywords.seo_generation_version_id > seo_generation_versions.id [delete: cascade]
+Ref: api_keys.workspace_id > workspaces.id [delete: cascade]
+Ref: api_keys.created_by_user_id > users.id
+Ref: api_key_permissions.api_key_id > api_keys.id [delete: cascade]
+Ref: api_key_permissions.permission_id > permissions.id
+Ref: api_key_project_scopes.api_key_id > api_keys.id [delete: cascade]
+Ref: api_key_project_scopes.seo_project_id > seo_projects.id [delete: cascade]
+Ref: webhook_endpoints.workspace_id > workspaces.id [delete: cascade]
+Ref: webhook_deliveries.webhook_endpoint_id > webhook_endpoints.id [delete: cascade]
+Ref: usage_events.workspace_id > workspaces.id [delete: cascade]
+Ref: usage_events.seo_project_id > seo_projects.id
+Ref: usage_daily_summaries.workspace_id > workspaces.id [delete: cascade]
+Ref: waitlist_entries.user_id > users.id
+Ref: deletion_requests.requested_by_user_id > users.id
