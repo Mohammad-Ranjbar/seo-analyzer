@@ -1,8 +1,8 @@
 ---
 title: سند نیازمندی‌های محصول
 lang: fa
-status: draft
-version: 0.1
+status: approved
+version: 1.0
 updated: 2026-10-09
 ---
 
@@ -99,12 +99,15 @@ updated: 2026-10-09
 - داشبورد کامل برای کاربر غیر فنی
 - Cron دلخواه
 
-## موارد باز
+## معیارهای پذیرش MVP
 
-- انتخاب ORM و migration tool
-- انتخاب Queue و Cache implementation
-- انتخاب مدل محلی یا قرارداد BYOK
-- تعریف نهایی Catalog مربوط به Permissionها و Audit Ruleها
-- تعیین مهلت Soft Delete
+- کاربر می‌تواند سازمان، workspace، scope پروژه و property اصلی را بسازد و هیچ داده‌ای از tenant دیگر نبیند.
+- baseline crawl با محدودیت‌های امنیتی مصوب در صف قرار می‌گیرد، پردازش می‌شود و با polling قابل مشاهده است.
+- crawl موفق فقط از دادهٔ استخراج‌شده، finding، امتیازهای تفکیک‌شده و action item متصل به نسخه می‌سازد.
+- crawl بعدی تاریخچه را حفظ می‌کند و verification فنی action item را مستقل از وضعیت کاربر ثبت می‌کند.
+- importهای API و writeهای قابل retry idempotent هستند؛ webhook امضاشده replay-safe است و نهایتاً به وضعیت terminal می‌رسد.
+- سیاست‌های password، session، OTP، API key، RLS، SSRF، retention و hard limit مطابق ADRهای پذیرفته‌شده‌اند.
+
+جزئیات provider مدل محلی/BYOK و محتوای نهایی catalogها کار integration افزایشی هستند و معیارهای بالا را تغییر نمی‌دهند.
 
 [English version](prd.en.md)

@@ -20,6 +20,7 @@ This directory is the version-controlled source of truth and the project's Obsid
 7. [ERD and drawDB artifact guide](database/README.en.md)
 8. [Design approval checklist](review/design-approval-checklist.en.md)
 9. [Architecture decisions](architecture/adr/README.en.md)
+10. [Public API contract](api/contract.en.md)
 
 ## Document states
 

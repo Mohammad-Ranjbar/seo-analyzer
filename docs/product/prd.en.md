@@ -1,8 +1,8 @@
 ---
 title: Product Requirements Document
 lang: en
-status: draft
-version: 0.1
+status: approved
+version: 1.0
 updated: 2026-10-09
 ---
 
@@ -99,12 +99,15 @@ Build a secure multi-tenant API for recurring SEO analysis of Persian commerce p
 - A complete non-technical dashboard
 - User-provided cron expressions
 
-## Open decisions
+## MVP acceptance criteria
 
-- ORM and migration tooling
-- Queue and cache implementation
-- Local AI model or BYOK contract
-- Final permission and audit-rule catalogs
-- Soft-delete recovery duration
+- A user can create an organization, workspace, project scope, and primary property without seeing another tenant's data.
+- A baseline crawl can be queued, processed within approved safety limits, and observed through polling.
+- A successful crawl produces version-bound findings, component scores, and action items using extracted data only.
+- A later crawl preserves history and records action-item verification independently from user workflow state.
+- API imports and retryable writes are idempotent; signed webhook delivery is replay-safe and eventually reaches a terminal state.
+- Password, session, OTP, API-key, RLS, SSRF, retention, and hard-limit policies match the accepted ADRs.
+
+Local-AI/BYOK provider details and final catalog contents are additive integration work and do not change these acceptance criteria.
 
 [Persian version](prd.fa.md)

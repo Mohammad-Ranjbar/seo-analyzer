@@ -1,0 +1,260 @@
+[
+  {
+    "id": "rlsPolicy.public.api_key_permissions.workspace_isolation_34_0704e55c",
+    "label": "Create RLS policy \"workspace_isolation_34_0704e55c\" on \"api_key_permissions\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "workspace_isolation_34_0704e55c",
+        "table": "api_key_permissions"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"workspace_isolation_34_0704e55c\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "api_key_permissions",
+          "workspace_isolation_34_0704e55c"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"workspace_isolation_34_0704e55c\"",
+        "sql": "CREATE POLICY \"workspace_isolation_34_0704e55c\" ON \"public\".\"api_key_permissions\" AS RESTRICTIVE FOR ALL TO seo_analyzer_app, seo_analyzer_worker USING ((workspace_id = app.current_workspace_id())) WITH CHECK ((workspace_id = app.current_workspace_id()))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"workspace_isolation_34_0704e55c\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "api_key_permissions",
+          "workspace_isolation_34_0704e55c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.api_key_project_scopes.workspace_isolation_35_0704e55c",
+    "label": "Create RLS policy \"workspace_isolation_35_0704e55c\" on \"api_key_project_scopes\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "workspace_isolation_35_0704e55c",
+        "table": "api_key_project_scopes"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"workspace_isolation_35_0704e55c\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "api_key_project_scopes",
+          "workspace_isolation_35_0704e55c"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"workspace_isolation_35_0704e55c\"",
+        "sql": "CREATE POLICY \"workspace_isolation_35_0704e55c\" ON \"public\".\"api_key_project_scopes\" AS RESTRICTIVE FOR ALL TO seo_analyzer_app, seo_analyzer_worker USING ((workspace_id = app.current_workspace_id())) WITH CHECK ((workspace_id = app.current_workspace_id()))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"workspace_isolation_35_0704e55c\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "api_key_project_scopes",
+          "workspace_isolation_35_0704e55c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.product_categories.workspace_isolation_36_0704e55c",
+    "label": "Create RLS policy \"workspace_isolation_36_0704e55c\" on \"product_categories\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "workspace_isolation_36_0704e55c",
+        "table": "product_categories"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"workspace_isolation_36_0704e55c\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "product_categories",
+          "workspace_isolation_36_0704e55c"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"workspace_isolation_36_0704e55c\"",
+        "sql": "CREATE POLICY \"workspace_isolation_36_0704e55c\" ON \"public\".\"product_categories\" AS RESTRICTIVE FOR ALL TO seo_analyzer_app, seo_analyzer_worker USING ((workspace_id = app.current_workspace_id())) WITH CHECK ((workspace_id = app.current_workspace_id()))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"workspace_isolation_36_0704e55c\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "product_categories",
+          "workspace_isolation_36_0704e55c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.seo_generation_keywords.workspace_isolation_37_0704e55c",
+    "label": "Create RLS policy \"workspace_isolation_37_0704e55c\" on \"seo_generation_keywords\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "workspace_isolation_37_0704e55c",
+        "table": "seo_generation_keywords"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"workspace_isolation_37_0704e55c\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "seo_generation_keywords",
+          "workspace_isolation_37_0704e55c"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"workspace_isolation_37_0704e55c\"",
+        "sql": "CREATE POLICY \"workspace_isolation_37_0704e55c\" ON \"public\".\"seo_generation_keywords\" AS RESTRICTIVE FOR ALL TO seo_analyzer_app, seo_analyzer_worker USING ((workspace_id = app.current_workspace_id())) WITH CHECK ((workspace_id = app.current_workspace_id()))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"workspace_isolation_37_0704e55c\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "seo_generation_keywords",
+          "workspace_isolation_37_0704e55c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.workspace_member_roles.workspace_isolation_38_0704e55c",
+    "label": "Create RLS policy \"workspace_isolation_38_0704e55c\" on \"workspace_member_roles\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "workspace_isolation_38_0704e55c",
+        "table": "workspace_member_roles"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"workspace_isolation_38_0704e55c\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "workspace_member_roles",
+          "workspace_isolation_38_0704e55c"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"workspace_isolation_38_0704e55c\"",
+        "sql": "CREATE POLICY \"workspace_isolation_38_0704e55c\" ON \"public\".\"workspace_member_roles\" AS RESTRICTIVE FOR ALL TO seo_analyzer_app, seo_analyzer_worker USING ((workspace_id = app.current_workspace_id())) WITH CHECK ((workspace_id = app.current_workspace_id()))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"workspace_isolation_38_0704e55c\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "workspace_member_roles",
+          "workspace_isolation_38_0704e55c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rlsPolicy.public.workspace_role_permissions.workspace_isolation_39_0704e55c",
+    "label": "Create RLS policy \"workspace_isolation_39_0704e55c\" on \"workspace_role_permissions\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rlsPolicy",
+        "name": "workspace_isolation_39_0704e55c",
+        "table": "workspace_role_permissions"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure RLS policy \"workspace_isolation_39_0704e55c\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "workspace_role_permissions",
+          "workspace_isolation_39_0704e55c"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create RLS policy \"workspace_isolation_39_0704e55c\"",
+        "sql": "CREATE POLICY \"workspace_isolation_39_0704e55c\" ON \"public\".\"workspace_role_permissions\" AS RESTRICTIVE FOR ALL TO seo_analyzer_app, seo_analyzer_worker USING ((workspace_id = app.current_workspace_id())) WITH CHECK ((workspace_id = app.current_workspace_id()))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify RLS policy \"workspace_isolation_39_0704e55c\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_policies\" WHERE (\"schemaname\" = $1 AND \"tablename\" = $2 AND \"policyname\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "workspace_role_permissions",
+          "workspace_isolation_39_0704e55c"
+        ]
+      }
+    ]
+  }
+]

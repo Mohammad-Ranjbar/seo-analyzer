@@ -757,7 +757,7 @@ Table deletion_requests {
 }
 
 Ref: user_contacts.user_id > users.id [delete: cascade]
-Ref: user_credentials.user_id - users.id [delete: cascade]
+Ref: user_credentials.user_id > users.id [delete: cascade]
 Ref: otp_challenges.user_contact_id > user_contacts.id [delete: cascade]
 Ref: auth_sessions.user_id > users.id [delete: cascade]
 Ref: organizations.created_by_user_id > users.id
@@ -779,7 +779,7 @@ Ref: workspace_member_roles.assigned_by_user_id > users.id
 Ref: seo_projects.organization_id > organizations.id
 Ref: seo_projects.workspace_id > workspaces.id
 Ref: seo_projects.created_by_user_id > users.id
-Ref: project_scopes.seo_project_id - seo_projects.id [delete: cascade]
+Ref: project_scopes.seo_project_id > seo_projects.id [delete: cascade]
 Ref: project_scope_categories.seo_project_id > seo_projects.id [delete: cascade]
 Ref: competitors.seo_project_id > seo_projects.id [delete: cascade]
 Ref: competitors.approved_by_user_id > users.id
@@ -787,7 +787,7 @@ Ref: competitor_suggestions.seo_project_id > seo_projects.id [delete: cascade]
 Ref: competitor_suggestions.reviewed_by_user_id > users.id
 Ref: web_properties.seo_project_id > seo_projects.id [delete: cascade]
 Ref: web_properties.competitor_id > competitors.id
-Ref: crawl_configurations.web_property_id - web_properties.id [delete: cascade]
+Ref: crawl_configurations.web_property_id > web_properties.id [delete: cascade]
 Ref: crawl_schedules.seo_project_id > seo_projects.id [delete: cascade]
 Ref: crawl_schedules.web_property_id > web_properties.id [delete: cascade]
 Ref: crawl_runs.seo_project_id > seo_projects.id [delete: cascade]

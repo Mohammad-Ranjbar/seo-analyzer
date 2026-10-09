@@ -20,6 +20,7 @@ updated: 2026-10-09
 7. [راهنمای ERD و خروجی‌های drawDB](database/README.fa.md)
 8. [چک‌لیست تأیید طراحی](review/design-approval-checklist.fa.md)
 9. [تصمیم‌های معماری](architecture/adr/README.fa.md)
+10. [قرارداد عمومی API](api/contract.fa.md)
 
 ## وضعیت اسناد
 

@@ -1,7 +1,7 @@
 ---
 title: واژه‌نامه محصول
 lang: fa
-status: draft
+status: approved
 updated: 2026-10-09
 ---
 

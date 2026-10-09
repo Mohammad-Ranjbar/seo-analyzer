@@ -7,7 +7,7 @@ updated: 2026-10-09
 
 # Design Approval Checklist
 
-This document is the implementation gate. No migration, ORM model, or executable endpoint is created until the “before coding” items are approved.
+This document is the domain implementation gate. Foundational tooling and operational endpoints may be built, but no domain migration, ORM model, or business endpoint is created until its applicable “before coding” items are approved.
 
 ## Current state
 
@@ -15,23 +15,23 @@ This document is the implementation gate. No migration, ORM model, or executable
 |---|---|---|---|
 | Business model | [Business plan](../business/business-plan.en.md) | Approved | MVP scope and free model are defined |
 | Conceptual database model | [Conceptual model](../database/conceptual-model.en.md) | Approved | 54 tables and 91 relationships are recorded in drawDB with zero problems |
-| Architecture decisions | [ADR index](../architecture/adr/README.en.md) | Accepted | Twelve foundation decisions are recorded |
-| Product requirements | [PRD](../product/prd.en.md) | Draft | Scenarios and acceptance criteria need review |
-| Architecture overview | [Overview](../architecture/overview.en.md) | Draft | Module boundaries depend on the remaining technical decisions |
-| Data dictionary | [Data dictionary](../database/data-dictionary.en.md) | Draft | Exact constraints and lifecycles are not final |
+| Architecture decisions | [ADR index](../architecture/adr/README.en.md) | Accepted | Twenty-one architecture decisions are recorded |
+| Product requirements | [PRD](../product/prd.en.md) | Approved | Primary scenarios and MVP acceptance criteria are binding |
+| Architecture overview | [Overview](../architecture/overview.en.md) | Approved | API, worker, data, and module boundaries are defined |
+| Data dictionary | [Data dictionary](../database/data-dictionary.en.md) | Approved | The physical Prisma contract and migration are executable |
 
 ## Required before coding
 
-- [ ] Approve primary scenarios and PRD acceptance criteria.
-- [ ] Define lifecycles and allowed values for primary statuses.
-- [ ] Approve uniqueness, nullability, and deletion constraints for the physical model.
-- [ ] Define exact RLS policies and tenant-context handling.
-- [ ] Select the ORM and migration-management approach and record an ADR.
-- [ ] Approve API versioning, error format, pagination, and idempotency contracts.
-- [ ] Select the crawl job, queue, and retry architecture.
-- [ ] Finalize SSRF, robots, rate-limit, and headless-fallback security policies.
-- [ ] Define session, access/refresh token, password hashing, and OTP limits.
-- [ ] Approve default crawl and data-retention limits.
+- [x] Approve primary scenarios and PRD acceptance criteria.
+- [x] Define lifecycles and allowed values for primary statuses.
+- [x] Approve uniqueness, nullability, and deletion constraints for the physical model.
+- [x] Define exact RLS policies and tenant-context handling.
+- [x] Select the ORM and migration-management approach and record an ADR.
+- [x] Approve API versioning, error format, pagination, and idempotency contracts.
+- [x] Select the crawl job, queue, and retry architecture.
+- [x] Finalize SSRF, robots, rate-limit, and headless-fallback security policies.
+- [x] Define session, access/refresh token, password hashing, and OTP limits.
+- [x] Approve default crawl and data-retention limits.
 
 ## Required before public beta
 

@@ -25,8 +25,10 @@ Access to the online version depends on the project owner's drawDB account. This
 
 The complete drawDB SVG export was approximately 206 MB, so it was not added to the repository. This is a visual-export limitation and does not affect the completeness of the DBML, JSON, or online diagram.
 
-## Current boundary
+## Conceptual and physical boundaries
 
-This model is documentation for design approval. It is not SQL, a migration, or executable application code. Physical-model implementation requires separate approval.
+The DBML and drawDB files remain the approved conceptual view. The executable physical model is the [Prisma contract](../../src/prisma/contract.prisma), with its immutable snapshot and initial migration under `migrations/`. The physical model adds operational idempotency storage, enforceable status/check constraints, composite tenant foreign keys, forced RLS, runtime roles, and transaction-scoped context functions.
+
+The initial migration has been applied to an empty PostgreSQL database, strictly verified against the emitted contract, and exercised with positive and negative tenant-isolation tests.
 
 [Persian version](README.fa.md)

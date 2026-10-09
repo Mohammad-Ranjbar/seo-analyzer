@@ -1,13 +1,13 @@
 ---
 title: فرهنگ داده
 lang: fa
-status: draft
+status: approved
 updated: 2026-10-09
 ---
 
-# فرهنگ داده اولیه
+# فرهنگ داده
 
-این سند سطح جدول را تعریف می‌کند. نوع دقیق ستون‌ها، Indexها و Policyهای RLS پس از تأیید ERD ثبت می‌شوند.
+این سند مسئولیت جدول‌ها را تعریف می‌کند. ستون‌ها، قیدها، indexها، relationها و policyهای دقیق RLS در [قرارداد Prisma](../../src/prisma/contract.prisma) و migration بازبینی‌شدهٔ آن قابل اجرا هستند.
 
 | گروه | جدول | مسئولیت |
 |---|---|---|
@@ -58,6 +58,7 @@ updated: 2026-10-09
 | API | `api_keys` | Hash و Metadata کلید Workspace |
 | API | `api_key_permissions` | Permissionهای کلید |
 | API | `api_key_project_scopes` | پروژه‌های مجاز کلید |
+| API | `idempotency_records` | Fingerprint درخواست، lock و پاسخ قابل replay با نگه‌داری ۲۴ساعته |
 | Webhook | `webhook_endpoints` | URL، Secret رمزنگاری‌شده و وضعیت |
 | Webhook | `webhook_deliveries` | تلاش، پاسخ و Retry تحویل |
 | Governance | `usage_events` | رخداد تغییرناپذیر مصرف |
@@ -74,5 +75,7 @@ updated: 2026-10-09
 - زمان‌ها: `*_at`
 - Soft delete: `deleted_at`
 - Enumها در دیتابیس فقط برای دامنه‌های بسیار پایدار؛ سایر وضعیت‌ها با Check Constraint یا Catalog مدیریت می‌شوند.
+
+مدل مفهومی ۵۴ جدول دامنه دارد. مدل فیزیکی به‌دلیل جدول عملیاتی `idempotency_records` شامل ۵۵ جدول است. شناسه‌های tenant روی جدول‌های واسط حساس نیز تکرار شده‌اند تا PostgreSQL بتواند RLS را مستقیماً enforce کند.
 
 [English version](data-dictionary.en.md)

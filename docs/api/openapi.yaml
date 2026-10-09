@@ -1,0 +1,179 @@
+openapi: 3.1.0
+info:
+  title: Persian SEO Analyzer API
+  version: 1.0.0
+  description: >-
+    Foundation contract for the Persian SEO Analyzer API. Business paths are added only after their
+    product, authorization, persistence, and tenant-isolation contracts are approved.
+servers:
+  - url: /
+paths:
+  /api/health:
+    get:
+      operationId: getHealth
+      summary: Check process liveness
+      description: This operational endpoint is version-neutral and does not require API-Version.
+      tags:
+        - Operations
+      responses:
+        "200":
+          description: The application process is accepting HTTP requests.
+          headers:
+            X-Request-ID:
+              $ref: "#/components/headers/XRequestId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+components:
+  headers:
+    XRequestId:
+      description: Server-generated identifier for this request.
+      schema:
+        type: string
+        format: uuid
+  parameters:
+    ApiVersion:
+      name: API-Version
+      in: header
+      required: true
+      description: Public API major version. The only supported value is currently 1.
+      schema:
+        type: string
+        const: "1"
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque URL-safe traversal token returned by the previous page.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 2048
+        pattern: "^[A-Za-z0-9_-]+$"
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of resources to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Unique high-entropy key for one logical retryable mutation.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 180
+        pattern: "^[!-~]+$"
+  schemas:
+    HealthResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - service
+      properties:
+        status:
+          type: string
+          const: ok
+        service:
+          type: string
+          const: seo-analyzer-api
+    ProblemDetails:
+      type: object
+      additionalProperties: true
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+        - code
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Stable tag URI identifying the problem class.
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        code:
+          type: string
+          pattern: "^[A-Z][A-Z0-9_]*$"
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationProblem"
+    ValidationProblem:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - pointer
+        - detail
+      properties:
+        code:
+          type: string
+          pattern: "^[A-Z][A-Z0-9_]*$"
+        pointer:
+          type: string
+          description: JSON Pointer locating the invalid request value.
+        detail:
+          type: string
+    PageMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - size
+      properties:
+        size:
+          type: integer
+          minimum: 0
+          maximum: 100
+        nextCursor:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          pattern: "^[A-Za-z0-9_-]+$"
+  responses:
+    BadRequest:
+      description: The request syntax, required header, or cursor is invalid.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/headers/XRequestId"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+    UnsupportedApiVersion:
+      description: The requested numeric API version is not supported.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/headers/XRequestId"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+    ValidationFailed:
+      description: The syntactically valid request violates one or more field rules.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/headers/XRequestId"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"

@@ -1,7 +1,7 @@
 ---
 title: Architecture Overview
 lang: en
-status: draft
+status: approved
 updated: 2026-10-09
 ---
 
@@ -9,7 +9,7 @@ updated: 2026-10-09
 
 ## Current state
 
-The repository uses NestJS 12.0.1 and TypeScript. Runtime architecture is not yet approved, and this document does not finalize an ORM, queue, or cache.
+The repository uses NestJS 12, TypeScript, Prisma ORM 8, PostgreSQL, Redis, and BullMQ. The API is a modular monolith, while long-running work is executed by a separately deployed worker using the same codebase and contracts.
 
 ## Logical boundaries
 
@@ -38,16 +38,15 @@ The repository uses NestJS 12.0.1 and TypeScript. Runtime architecture is not ye
 
 - Tenant context must be explicit and auditable in HTTP requests and background jobs.
 - Workers must not bypass RLS without a validated scope.
+- Public endpoints follow the accepted [HTTP API contract](../api/contract.en.md).
 - Crawls and webhooks must be idempotent and retry-safe.
 - Historical snapshots are immutable; corrections require a new snapshot or version.
 - Secrets must never enter logs, documentation, or snapshots.
 
-## Open decisions
+## Deferred integration choices
 
-- Modular monolith versus a separate worker process
-- ORM and migration tooling
-- Queue, cache, and object storage
 - BYOK credential storage
-- Free MVP observability
+- Object storage provider
+- Production observability provider
 
 [Persian version](overview.fa.md)

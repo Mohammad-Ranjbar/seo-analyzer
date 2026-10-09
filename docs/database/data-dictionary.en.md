@@ -1,13 +1,13 @@
 ---
 title: Data Dictionary
 lang: en
-status: draft
+status: approved
 updated: 2026-10-09
 ---
 
-# Initial Data Dictionary
+# Data Dictionary
 
-This document defines table-level responsibilities. Exact column types, indexes, and RLS policies will be documented after ERD approval.
+This document defines table-level responsibilities. Exact columns, constraints, indexes, relationships, and RLS policies are executable in the [Prisma contract](../../src/prisma/contract.prisma) and its reviewed migration package.
 
 | Group | Table | Responsibility |
 |---|---|---|
@@ -58,6 +58,7 @@ This document defines table-level responsibilities. Exact column types, indexes,
 | API | `api_keys` | Workspace key hash and metadata |
 | API | `api_key_permissions` | Key permissions |
 | API | `api_key_project_scopes` | Key project scopes |
+| API | `idempotency_records` | Request fingerprint, lock, and replayable response retained for 24 hours |
 | Webhook | `webhook_endpoints` | URL, encrypted secret, and state |
 | Webhook | `webhook_deliveries` | Delivery attempts, responses, and retries |
 | Governance | `usage_events` | Immutable usage event |
@@ -74,5 +75,7 @@ This document defines table-level responsibilities. Exact column types, indexes,
 - Timestamps: `*_at`
 - Soft deletion: `deleted_at`
 - Database enums only for highly stable domains; use check constraints or catalogs for evolving states.
+
+The conceptual model has 54 domain tables. The physical model has 55 tables because `idempotency_records` is operational API infrastructure. Tenant identifiers are also repeated on security-sensitive junction tables so PostgreSQL can enforce RLS directly.
 
 [Persian version](data-dictionary.fa.md)

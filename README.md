@@ -2,7 +2,7 @@
 
 API-first SEO analysis platform for Persian online stores, built with NestJS 12 and designed around PostgreSQL.
 
-> **Project status: design and approval phase.** The business model and conceptual database model are approved. Application features, database migrations, and production integrations have not been implemented yet.
+> **Project status: approved foundation.** Product, architecture, API, physical database, and security decisions are approved. The health API, development toolchain, Prisma contract, and initial PostgreSQL migration are implemented; domain features and production integrations are the next stage.
 
 [مستندات فارسی](#فارسی) · [English documentation](#english) · [Project documentation](docs/index.en.md) · [GitHub repository](https://github.com/Mohammad-Ranjbar/seo-analyzer)
 
@@ -30,9 +30,10 @@ API-first SEO analysis platform for Persian online stores, built with NestJS 12 
 - مدل کسب‌وکار: تأییدشده
 - مدل مفهومی PostgreSQL: تأییدشده
 - ERD: ۵۴ جدول، ۹۱ رابطه و صفر Problem در drawDB
-- ADRها: ۱۲ تصمیم معماری پذیرفته‌شده
-- PRD، نمای معماری و فرهنگ داده: در انتظار بازبینی نهایی
-- پیاده‌سازی برنامه و Migrationها: شروع نشده
+- ADRها: ۲۱ تصمیم معماری پذیرفته‌شده
+- PRD، نمای معماری و فرهنگ داده: تأییدشده
+- زیرساخت API و Health Check: پیاده‌سازی‌شده
+- مدل فیزیکی Prisma و Migration اولیه: پیاده‌سازی و روی دیتابیس خالی تأیید شده است
 
 ### مستندات
 
@@ -71,9 +72,10 @@ No paid third-party service is a mandatory MVP dependency.
 - Business model: approved
 - PostgreSQL conceptual model: approved
 - ERD: 54 tables, 91 relationships, and zero drawDB problems
-- ADRs: 12 accepted architecture decisions
-- PRD, architecture overview, and data dictionary: awaiting final review
-- Application implementation and migrations: not started
+- ADRs: 21 accepted architecture decisions
+- PRD, architecture overview, and data dictionary: approved
+- API foundation and health check: implemented
+- Physical Prisma model and initial migration: implemented and verified on an empty database
 
 ### Documentation
 
@@ -91,16 +93,17 @@ No paid third-party service is a mandatory MVP dependency.
 - [NestJS 12](https://docs.nestjs.com/)
 - TypeScript with native ESM
 - PostgreSQL with a shared schema and Row-Level Security
+- Prisma ORM 8 with reviewed PostgreSQL migrations
 - Vitest for tests
-- oxlint and Prettier for static checks and formatting
+- Biome for static checks and formatting
 - Obsidian-compatible Markdown documentation
 - drawDB with versioned DBML and JSON exports
 
-The ORM, queue implementation, production SMS provider, and optional AI providers are intentionally undecided until their corresponding design reviews are approved.
+BullMQ with Redis and a separate worker is the approved queue architecture. Production SMS, object storage, observability, and optional AI providers remain integration choices. Prisma 8 is currently release-candidate software and must be reassessed before public beta.
 
 ## Local starter commands
 
-The repository currently contains the generated NestJS starter plus approved documentation. These commands operate on the starter; they do not provide the planned SEO features yet.
+The repository currently contains the NestJS API foundation plus approved documentation. Domain SEO features are not implemented yet.
 
 ```bash
 npm install
@@ -111,10 +114,17 @@ Available checks:
 
 ```bash
 npm run build
-npm run lint
+npm run check
 npm run test
 npm run test:e2e
+npm run verify
 ```
+
+Database migrations require `DATABASE_URL`. Apply the reviewed graph with `npx prisma db migrate --to @contract`, then use `npx prisma db verify --schema-only --strict` when diagnosing drift.
+The destructive-free tenant fixture must target a fresh database whose name ends in `_test`: `DATABASE_TEST_URL=postgresql://.../seo_analyzer_test npm run test:database`.
+
+The version-neutral liveness endpoint is available at `GET /api/health`. Other API endpoints
+require `API-Version: 1`. See the [public API contract](docs/api/contract.en.md).
 
 ## Repository
 

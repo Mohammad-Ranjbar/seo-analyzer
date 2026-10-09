@@ -1,7 +1,7 @@
 ---
 title: نمای کلی معماری
 lang: fa
-status: draft
+status: approved
 updated: 2026-10-09
 ---
 
@@ -9,7 +9,7 @@ updated: 2026-10-09
 
 ## وضعیت فعلی
 
-مخزن از NestJS 12.0.1 و TypeScript استفاده می‌کند، اما معماری اجرایی هنوز تأیید نشده و این سند هیچ انتخابی درباره ORM، Queue یا Cache را قطعی نمی‌کند.
+مخزن از NestJS 12، TypeScript، Prisma ORM 8، PostgreSQL، Redis و BullMQ استفاده می‌کند. API یک modular monolith است و کارهای طولانی در worker مستقلی اجرا می‌شوند که همان codebase و contractها را به‌کار می‌برد.
 
 ## مرزهای منطقی
 
@@ -38,16 +38,15 @@ updated: 2026-10-09
 
 - Tenant context برای درخواست HTTP و Job پس‌زمینه باید صریح و قابل Audit باشد.
 - Background worker نباید RLS را بدون Scope معتبر دور بزند.
+- Endpointهای عمومی از [قرارداد HTTP API](../api/contract.fa.md) پذیرفته‌شده پیروی می‌کنند.
 - Crawl و Webhook باید Idempotent و Retry-safe باشند.
 - Snapshot تاریخی تغییرناپذیر است؛ اصلاح داده با Snapshot یا Version جدید انجام می‌شود.
 - Secret در Log، مستندات و Snapshot قرار نمی‌گیرد.
 
-## موارد باز
+## انتخاب‌های integration که به بعد موکول شده‌اند
 
-- معماری Modular Monolith یا تفکیک Worker
-- ORM و migration tool
-- Queue، cache و object storage
 - روش نگهداری Credentialهای BYOK
-- مشاهده‌پذیری رایگان MVP
+- Provider ذخیره‌سازی object
+- Provider مشاهده‌پذیری production
 
 [English version](overview.en.md)

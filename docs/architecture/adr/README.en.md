@@ -21,5 +21,14 @@ updated: 2026-10-09
 | [0010](0010-authentication-and-invitations.en.md) | Authentication and invitations | Accepted |
 | [0011](0011-html-first-headless-fallback.en.md) | HTML-first with headless fallback | Accepted |
 | [0012](0012-usage-metering-before-billing.en.md) | Meter usage before billing | Accepted |
+| [0013](0013-use-prisma-orm-8.en.md) | Prisma ORM 8 with reviewed PostgreSQL migrations | Accepted |
+| [0014](0014-use-biome.en.md) | Biome for static checks and formatting | Accepted |
+| [0015](0015-public-api-contract.en.md) | Public HTTP API contract | Accepted |
+| [0016](0016-physical-data-model-and-lifecycles.en.md) | Physical model and lifecycles | Accepted |
+| [0017](0017-transaction-scoped-tenant-rls.en.md) | Transaction-scoped tenant context and forced RLS | Accepted |
+| [0018](0018-bullmq-job-processing.en.md) | BullMQ job processing | Accepted |
+| [0019](0019-outbound-request-security.en.md) | Outbound request and crawler security | Accepted |
+| [0020](0020-authentication-security.en.md) | Authentication and session security | Accepted |
+| [0021](0021-mvp-limits-and-retention.en.md) | MVP limits and retention | Accepted |
 
 [Persian version](README.fa.md)
