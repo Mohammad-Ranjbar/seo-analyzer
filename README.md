@@ -1,119 +1,129 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Persian SEO Analyzer API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API-first SEO analysis platform for Persian online stores, built with NestJS 12 and designed around PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> **Project status: design and approval phase.** The business model and conceptual database model are approved. Application features, database migrations, and production integrations have not been implemented yet.
 
-## Description
+[مستندات فارسی](#فارسی) · [English documentation](#english) · [Project documentation](docs/index.en.md) · [GitHub repository](https://github.com/Mohammad-Ranjbar/seo-analyzer)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## فارسی
 
-## Project setup
+این پروژه یک سرویس API برای تحلیل و بهبود SEO فروشگاه‌های آنلاین فارسی‌زبان در بازار ایران است. کاربر پس از ساخت سازمان، Workspace و پروژه SEO، دامنه اصلی و رقبای خود را معرفی می‌کند یا پیشنهادهای سیستم را تأیید می‌کند. سامانه با Crawl محدود و مسئولانه، وضعیت فنی و محتوایی قابل استخراج را تحلیل و پیشرفت سایت را در طول زمان اندازه‌گیری خواهد کرد.
+
+### دامنه MVP
+
+- دریافت محصول از API یا Crawl صفحات محصول و دسته‌بندی
+- تولید پیشنهادهای SEO براساس عنوان، برند و دسته‌بندی
+- Crawl دستی، هفتگی یا ماهانه با HTML-first و Headless fallback محدود
+- ثبت و تحلیل رقبا با تأیید کاربر
+- مقایسه کلی سایت با رقبا و نگهداری تاریخچه امتیازها
+- Action Item با وضعیت کاربر و نتیجه فنی مستقل
+- API Key محدود به Workspace، پروژه و Permission
+- Polling و Webhook امضاشده
+- هسته Rule-based و AI اختیاری از طریق مدل محلی یا BYOK
+- اندازه‌گیری مصرف بدون Billing در MVP
+
+هیچ ابزار پولی خارجی جزو وابستگی الزامی MVP نیست.
+
+### وضعیت طراحی
+
+- مدل کسب‌وکار: تأییدشده
+- مدل مفهومی PostgreSQL: تأییدشده
+- ERD: ۵۴ جدول، ۹۱ رابطه و صفر Problem در drawDB
+- ADRها: ۱۲ تصمیم معماری پذیرفته‌شده
+- PRD، نمای معماری و فرهنگ داده: در انتظار بازبینی نهایی
+- پیاده‌سازی برنامه و Migrationها: شروع نشده
+
+### مستندات
+
+- [راهنمای مستندات فارسی](docs/index.fa.md)
+- [طرح کسب‌وکار](docs/business/business-plan.fa.md)
+- [نیازمندی‌های محصول](docs/product/prd.fa.md)
+- [مدل مفهومی دیتابیس](docs/database/conceptual-model.fa.md)
+- [راهنمای ERD و فایل‌های drawDB](docs/database/README.fa.md)
+- [فرهنگ داده](docs/database/data-dictionary.fa.md)
+- [تصمیم‌های معماری](docs/architecture/adr/README.fa.md)
+- [چک‌لیست تأیید طراحی](docs/review/design-approval-checklist.fa.md)
+
+پوشه `docs/` یک Vault محلی سازگار با Obsidian است. تنظیمات شخصی `.obsidian/` عمداً در Git نگهداری نمی‌شوند.
+
+## English
+
+Persian SEO Analyzer is an API-first service for analyzing and improving the SEO of Persian-language online stores in Iran. A user creates an organization, workspace, and SEO project; defines the primary website; and supplies competitors or approves system suggestions. The planned system performs constrained crawling, evaluates extractable technical and content signals, and measures progress over time.
+
+### MVP scope
+
+- Product ingestion through the API or product/category crawling
+- SEO suggestions based on product title, brand, and categories
+- Manual, weekly, or monthly HTML-first crawling with constrained headless fallback
+- User-approved competitor discovery and tracking
+- Site-level competitor comparison with score history
+- Action items with separate user workflow and technical verification states
+- Workspace API keys restricted by project and permission
+- Polling and signed webhooks
+- Rules-first core with optional local-model or BYOK AI
+- Usage metering without MVP billing
+
+No paid third-party service is a mandatory MVP dependency.
+
+### Design status
+
+- Business model: approved
+- PostgreSQL conceptual model: approved
+- ERD: 54 tables, 91 relationships, and zero drawDB problems
+- ADRs: 12 accepted architecture decisions
+- PRD, architecture overview, and data dictionary: awaiting final review
+- Application implementation and migrations: not started
+
+### Documentation
+
+- [Documentation guide](docs/index.en.md)
+- [Business plan](docs/business/business-plan.en.md)
+- [Product requirements](docs/product/prd.en.md)
+- [Conceptual database model](docs/database/conceptual-model.en.md)
+- [ERD and drawDB artifacts](docs/database/README.en.md)
+- [Data dictionary](docs/database/data-dictionary.en.md)
+- [Architecture decisions](docs/architecture/adr/README.en.md)
+- [Design approval checklist](docs/review/design-approval-checklist.en.md)
+
+## Technology baseline
+
+- [NestJS 12](https://docs.nestjs.com/)
+- TypeScript with native ESM
+- PostgreSQL with a shared schema and Row-Level Security
+- Vitest for tests
+- oxlint and Prettier for static checks and formatting
+- Obsidian-compatible Markdown documentation
+- drawDB with versioned DBML and JSON exports
+
+The ORM, queue implementation, production SMS provider, and optional AI providers are intentionally undecided until their corresponding design reviews are approved.
+
+## Local starter commands
+
+The repository currently contains the generated NestJS starter plus approved documentation. These commands operate on the starter; they do not provide the planned SEO features yet.
 
 ```bash
-$ npm install
+npm install
+npm run start:dev
 ```
 
-## Compile and run the project
+Available checks:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run build
+npm run lint
+npm run test
+npm run test:e2e
 ```
 
-## Run tests
+## Repository
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+git clone https://github.com/Mohammad-Ranjbar/seo-analyzer.git
+cd seo-analyzer
+npm install
 ```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-This project is already instrumented. Create a free account at [observe.nestjs.com](https://observe.nestjs.com), add an application, and paste the generated app key and secret into the `ObserveModule.forRoot()` call in `src/app.module.ts`.
-
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# seo-analyzer
+This repository is currently marked as `UNLICENSED` and is not offered under an open-source license.
